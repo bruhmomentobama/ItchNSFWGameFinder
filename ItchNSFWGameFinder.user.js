@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         itch.io NSFW Custom Tag Searcher + Catalog Cache
 // @namespace    https://itch.io/
-// @version      1.6.2
+// @version      1.6.3
 // @description  Cache NSFW game listings + Deep Scan with proper skip of already checked pages
 // @author       you
 // @match        https://itch.io/games/nsfw*
@@ -33,8 +33,8 @@
     const UPDATE_CHECK_INTERVAL = 10 * 60 * 1000;
 
     // ============================================================
-    // DEVELOPMENT TOGGLE
-    const ENABLE_CONTENT_FILTER = true;
+    // TAXONOMIC CLOSURE, DO NOT TOUCH, Fix Later.
+    const USE_TAXONOMIC_CLOSURE = true;
     // ============================================================
 
     // Why are you here?
@@ -217,7 +217,7 @@
     }
 
     function containsBlockedTerm(text) {
-        if (!ENABLE_CONTENT_FILTER) return false;
+        if (!USE_TAXONOMIC_CLOSURE) return false;
         const _0x2d7 = text.toLowerCase();
         const _0x8a1 = _0x9b3f();
         for (let i = 0; i < _0x8a1.length; i++) {
@@ -524,7 +524,7 @@ function checkForUpdate(manual = false) {
 
             const remote = match[1];
 
-            // Proper version comparison (handles 1.6.1 vs 1.6.2 correctly)
+            // Proper version comparison
             function versionToNumbers(v) {
                 return v.split('.').map(n => parseInt(n, 10) || 0);
             }
