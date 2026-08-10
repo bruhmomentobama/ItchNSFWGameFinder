@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         itch.io NSFW Custom Tag Searcher + Catalog Cache
 // @namespace    https://itch.io/
-// @version      1.6
+// @version      1.6.1
 // @description  Cache NSFW game listings + Deep Scan with proper skip of already checked pages
 // @author       you
 // @match        https://itch.io/games/nsfw*
@@ -29,9 +29,26 @@
     const CACHE_MAX_AGE_DAYS = 7;
     const GITHUB_REPO = 'https://github.com/bruhmomentobama/ItchNSFWGameFinder';
     const GITHUB_RAW = 'https://raw.githubusercontent.com/bruhmomentobama/ItchNSFWGameFinder/main/ItchNSFWGameFinder.user.js';
-    const CURRENT_VERSION = '1.6';
-    const UPDATE_CHECK_INTERVAL = 10 * 60 * 1000; // 10 minutes
-    // ================================================
+    const CURRENT_VERSION = '1.6.1';
+    const UPDATE_CHECK_INTERVAL = 10 * 60 * 1000;
+
+    // ============================================================
+    // DEVELOPMENT TOGGLE 
+    const ENABLE_CONTENT_FILTER = true; 
+    // ============================================================
+
+    // Why are you here?
+    const _0x4f2a = [
+        [0x6c,0x6f,0x6c,0x69], [0x6c,0x6f,0x6c,0x69,0x63,0x6f,0x6e],
+        [0x6c,0x6f,0x6c,0x69,0x74,0x61], [0x73,0x68,0x6f,0x74,0x61],
+        [0x73,0x68,0x6f,0x74,0x61,0x63,0x6f,0x6e], [0x70,0x65,0x64,0x6f],
+        [0x70,0x65,0x64,0x6f,0x70,0x68,0x69,0x6c,0x65], [0x70,0x61,0x65,0x64,0x6f],
+        [0x75,0x6e,0x64,0x65,0x72,0x61,0x67,0x65], [0x63,0x68,0x69,0x6c,0x64,0x20,0x70,0x6f,0x72,0x6e],
+        [0x63,0x70], [0x70,0x72,0x65,0x74,0x65,0x65,0x6e], [0x6d,0x69,0x6e,0x6f,0x72]
+    ];
+    const _0x1c8e = (a) => a.map(c => String.fromCharCode(c)).join('');
+    const _0x9b3f = () => _0x4f2a.map(_0x1c8e);
+    // ============================================================
 
     let games = [];
     let isScraping = false;
@@ -53,7 +70,7 @@
             }
             #itch-tag-searcher {
                 position: fixed; bottom: 80px; right: 20px; z-index: 99999;
-                width: 440px; max-height: 80vh; background: #1a1a1a; color: #eee;
+                width: 460px; max-height: 82vh; background: #1a1a1a; color: #eee;
                 border: 1px solid #444; border-radius: 10px; padding: 14px;
                 font-family: system-ui, sans-serif; font-size: 13px;
                 display: none; flex-direction: column; gap: 10px;
@@ -77,11 +94,39 @@
                 box-shadow: 0 0 12px rgba(255,0,0,0.6); width: 100%;
             }
             #itch-emergency-btn:hover { background: #cc0000 !important; }
-            #itch-github-link {
-                display: block; text-align: center; color: #7eb8ff;
-                text-decoration: none; font-size: 12px; margin-top: 4px;
+
+            .itch-bottom-row {
+                display: flex; gap: 8px; margin-top: 6px;
             }
-            #itch-github-link:hover { color: #a0d0ff; text-decoration: underline; }
+            .itch-bottom-row a, .itch-bottom-row button {
+                flex: 1; text-align: center; padding: 9px 6px;
+                border-radius: 6px; font-size: 12px; font-weight: 700;
+                text-decoration: none; border: none; cursor: pointer;
+                transition: transform 0.15s, box-shadow 0.15s;
+            }
+            .itch-bottom-row a:hover, .itch-bottom-row button:hover {
+                transform: translateY(-2px);
+            }
+
+            #itch-github-btn {
+                background: linear-gradient(135deg, #238636, #2ea043);
+                color: white !important;
+                box-shadow: 0 0 10px rgba(46, 160, 67, 0.5);
+            }
+            #itch-github-btn:hover {
+                box-shadow: 0 0 16px rgba(46, 160, 67, 0.8);
+            }
+
+            #itch-bug-btn {
+                background: #b45309; color: white;
+            }
+            #itch-bug-btn:hover { background: #d97706; }
+
+            #itch-update-btn {
+                background: #1d4ed8; color: white;
+            }
+            #itch-update-btn:hover { background: #2563eb; }
+
             #itch-update-badge {
                 display: none; background: #22c55e; color: #000; font-size: 11px;
                 font-weight: 700; padding: 4px 8px; border-radius: 4px; text-align: center;
@@ -89,12 +134,29 @@
             #itch-tag-searcher .status { font-size: 12px; color: #aaa; min-height: 1.2em; }
             #itch-tag-searcher .progress { height: 6px; background: #333; border-radius: 3px; overflow: hidden; }
             #itch-tag-searcher .progress-bar { height: 100%; width: 0%; background: #fa5c5c; transition: width 0.2s; }
-            #itch-results { flex: 1; overflow-y: auto; border-top: 1px solid #333; padding-top: 8px; max-height: 42vh; }
+            #itch-results { flex: 1; overflow-y: auto; border-top: 1px solid #333; padding-top: 8px; max-height: 38vh; }
             #itch-results a { display: block; color: #7eb8ff; text-decoration: none; padding: 4px 0; border-bottom: 1px solid #2a2a2a; }
             #itch-results a:hover { color: #a0d0ff; }
             #itch-results .meta { font-size: 11px; color: #888; }
+
+            #itch-flashbang {
+                position: fixed; inset: 0; z-index: 2147483647;
+                background: #ff0000; color: white;
+                display: flex; align-items: center; justify-content: center;
+                font-size: 42px; font-weight: 900; text-align: center;
+                padding: 40px; line-height: 1.3;
+                opacity: 0; pointer-events: none; transition: opacity 0.15s;
+            }
+            #itch-flashbang.show {
+                opacity: 1; pointer-events: auto;
+            }
         `;
         document.head.appendChild(style);
+
+        const flash = document.createElement('div');
+        flash.id = 'itch-flashbang';
+        flash.textContent = 'ILLEGAL CONTENT BLOCKED\n\nSeek fucking help.';
+        document.body.appendChild(flash);
 
         const toggle = document.createElement('button');
         toggle.id = 'itch-tag-searcher-toggle';
@@ -107,8 +169,7 @@
         panel.id = 'itch-tag-searcher';
         panel.innerHTML = `
             <div style="font-weight:700;font-size:14px;">Itch.io NSFW Game Finder v${CURRENT_VERSION}</div>
-            <div id="itch-update-badge">⬆ Update available – click GitHub below</div>
-            <a id="itch-github-link" href="${GITHUB_REPO}" target="_blank" rel="noopener">GitHub Repository</a>
+            <div id="itch-update-badge">⬆ Update available – use the button below</div>
 
             <button id="itch-emergency-btn">🛑 EMERGENCY STOP 🛑</button>
 
@@ -122,6 +183,12 @@
             <div class="status" id="itch-status">Ready</div>
             <div class="progress"><div class="progress-bar" id="itch-progress"></div></div>
             <div id="itch-results"></div>
+
+            <div class="itch-bottom-row">
+                <a id="itch-github-btn" href="${GITHUB_REPO}" target="_blank" rel="noopener">GitHub</a>
+                <button id="itch-bug-btn">Report Bug</button>
+                <button id="itch-update-btn">Check Updates</button>
+            </div>
         `;
         document.body.appendChild(panel);
 
@@ -130,9 +197,33 @@
         document.getElementById('itch-deep-btn').onclick = () => doSearch(true);
         document.getElementById('itch-scrape-btn').onclick = () => startScrape(true);
         document.getElementById('itch-clear-btn').onclick = clearCache;
+        document.getElementById('itch-bug-btn').onclick = () => {
+            window.open(GITHUB_REPO + '/issues', '_blank');
+        };
+        document.getElementById('itch-update-btn').onclick = () => {
+            updateStatus('Checking for updates…');
+            checkForUpdate(true);
+        };
         document.getElementById('itch-keywords').addEventListener('keydown', e => {
             if (e.key === 'Enter' && !isAborted) doSearch(false);
         });
+    }
+
+    function triggerFlashbang() {
+        const el = document.getElementById('itch-flashbang');
+        if (!el) return;
+        el.classList.add('show');
+        setTimeout(() => el.classList.remove('show'), 3200);
+    }
+
+    function containsBlockedTerm(text) {
+        if (!ENABLE_CONTENT_FILTER) return false;
+        const _0x2d7 = text.toLowerCase();
+        const _0x8a1 = _0x9b3f();
+        for (let i = 0; i < _0x8a1.length; i++) {
+            if (_0x2d7.indexOf(_0x8a1[i]) !== -1) return true;
+        }
+        return false;
     }
 
     function emergencyStop() {
@@ -303,6 +394,14 @@
 
         const raw = document.getElementById('itch-keywords').value.trim();
         if (!raw) return updateStatus('Enter keywords separated by commas');
+
+        if (containsBlockedTerm(raw)) {
+            triggerFlashbang();
+            updateStatus('Blocked – illegal search term detected');
+            document.getElementById('itch-keywords').value = '';
+            return;
+        }
+
         if (!games.length) return updateStatus('No cache yet – click Refresh Cache first');
 
         const keywords = raw.split(',').map(k => k.trim().toLowerCase()).filter(Boolean);
@@ -316,7 +415,6 @@
         renderResults(results, keywords, deep ? ' (checking deep…)' : '');
         if (!deep) return;
 
-        // Deep Scan with proper skip
         isDeepScanning = true;
         document.getElementById('itch-deep-btn').disabled = true;
         document.getElementById('itch-search-btn').disabled = true;
@@ -405,23 +503,34 @@
         return new Promise(r => setTimeout(r, ms));
     }
 
-    // ---------- Update checker (safe – version only) ----------
-    function checkForUpdate() {
-        if (isScraping || isDeepScanning || isAborted) return; // only when idle
+    // ---------- Update checker ----------
+    function checkForUpdate(manual = false) {
+        if (!manual && (isScraping || isDeepScanning || isAborted)) return;
 
         GM_xmlhttpRequest({
             method: 'GET',
             url: GITHUB_RAW + '?t=' + Date.now(),
             onload: res => {
-                if (res.status !== 200) return;
-                const match = res.responseText.match(/@version\s+(\d+\.\d+)/);
+                if (res.status !== 200) {
+                    if (manual) updateStatus('Could not reach GitHub');
+                    return;
+                }
+                const match = res.responseText.match(/@version\s+(\d+\.\d+(?:\.\d+)?)/);
                 if (match) {
                     const remote = match[1];
                     if (remote !== CURRENT_VERSION && parseFloat(remote) > parseFloat(CURRENT_VERSION)) {
                         showUpdateBadge();
-                        console.log(`[ItchNSFW] Update available: ${CURRENT_VERSION} → ${remote}`);
+                        if (manual) {
+                            updateStatus(`Update available: ${CURRENT_VERSION} → ${remote}`);
+                            alert(`New version ${remote} is available!\n\nGo to the GitHub page to update.`);
+                        }
+                    } else if (manual) {
+                        updateStatus('You have the latest version.');
                     }
                 }
+            },
+            onerror: () => {
+                if (manual) updateStatus('Update check failed');
             }
         });
     }
@@ -430,7 +539,6 @@
     createUI();
     if (!loadCache()) updateStatus('No cache found. Click “Refresh Cache” first.');
 
-    // Start background update checks
-    setTimeout(checkForUpdate, 5000);               // first check after 5s
-    setInterval(checkForUpdate, UPDATE_CHECK_INTERVAL);
+    setTimeout(() => checkForUpdate(false), 5000);
+    setInterval(() => checkForUpdate(false), UPDATE_CHECK_INTERVAL);
 })();
