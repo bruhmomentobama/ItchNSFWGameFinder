@@ -155,7 +155,7 @@
 
         const flash = document.createElement('div');
         flash.id = 'itch-flashbang';
-        flash.textContent = 'ILLEGAL CONTENT BLOCKED\n\nSeek fucking help.';
+        flash.textContent = 'ILLEGAL CONTENT BLOCKED\n\nYOU FUCKING SICK PIECE OF SHIT';
         document.body.appendChild(flash);
 
         const toggle = document.createElement('button');
