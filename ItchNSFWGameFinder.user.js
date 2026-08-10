@@ -109,12 +109,12 @@
             }
 
             #itch-github-btn {
-                background: linear-gradient(135deg, #238636, #2ea043);
-                color: white !important;
-                box-shadow: 0 0 10px rgba(46, 160, 67, 0.5);
+                background: white;
+                color: black !important;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
             }
             #itch-github-btn:hover {
-                box-shadow: 0 0 16px rgba(46, 160, 67, 0.8);
+                box-shadow: 0 0 16px rgba(0, 0, 0, 0.4);
             }
 
             #itch-bug-btn {
