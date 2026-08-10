@@ -118,17 +118,17 @@
             }
 
             #itch-bug-btn {
-                background: #cc0000; color: white;
+                background: #cc0000 !important; color: white;
             }
-            #itch-bug-btn:hover { background: #cc0000; }
+            #itch-bug-btn:hover { background: #cc0000 !important; }
 
             #itch-update-btn {
-                background: #89CFF0; color: white;
+                background: #6082B6 !important; color: white;
             }
-            #itch-update-btn:hover { background: #89CFF0; }
+            #itch-update-btn:hover { background: #6082B6 !important; }
 
             #itch-update-badge {
-                display: none; background: #89CFF0; color: #000; font-size: 11px;
+                display: none; background: #6082B6 !important; color: #000; font-size: 11px;
                 font-weight: 700; padding: 4px 8px; border-radius: 4px; text-align: center;
             }
             #itch-tag-searcher .status { font-size: 12px; color: #aaa; min-height: 1.2em; }
