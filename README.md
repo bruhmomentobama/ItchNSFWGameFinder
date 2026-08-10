@@ -2,7 +2,7 @@
 
 **A powerful Tampermonkey userscript that lets you search the entire itch.io NSFW catalog with custom keywords.**
 
-![Version](https://img.shields.io/badge/version-1.6.2-blue)
+![Version](https://img.shields.io/badge/version-1.6.3-blue)
 ![Tampermonkey](https://img.shields.io/badge/Tampermonkey-required-yellow)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
