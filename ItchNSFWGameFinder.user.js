@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         itch.io NSFW Custom Tag Searcher + Catalog Cache
 // @namespace    https://itch.io/
-// @version      1.6.1
+// @version      1.6.2
 // @description  Cache NSFW game listings + Deep Scan with proper skip of already checked pages
 // @author       you
 // @match        https://itch.io/games/nsfw*
