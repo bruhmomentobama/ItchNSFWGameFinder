@@ -118,14 +118,14 @@
             }
 
             #itch-bug-btn {
-                background: #b45309; color: white;
+                background: #cc0000; color: white;
             }
-            #itch-bug-btn:hover { background: #b45309; }
+            #itch-bug-btn:hover { background: #cc0000; }
 
             #itch-update-btn {
-                background: #00FFFF; color: white;
+                background: #89CFF0; color: white;
             }
-            #itch-update-btn:hover { background: #00FFFF; }
+            #itch-update-btn:hover { background: #89CFF0; }
 
             #itch-update-badge {
                 display: none; background: #22c55e; color: #000; font-size: 11px;
