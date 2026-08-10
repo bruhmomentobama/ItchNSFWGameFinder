@@ -128,7 +128,7 @@
             #itch-update-btn:hover { background: #89CFF0; }
 
             #itch-update-badge {
-                display: none; background: #22c55e; color: #000; font-size: 11px;
+                display: none; background: #89CFF0; color: #000; font-size: 11px;
                 font-weight: 700; padding: 4px 8px; border-radius: 4px; text-align: center;
             }
             #itch-tag-searcher .status { font-size: 12px; color: #aaa; min-height: 1.2em; }
