@@ -29,12 +29,12 @@
     const CACHE_MAX_AGE_DAYS = 7;
     const GITHUB_REPO = 'https://github.com/bruhmomentobama/ItchNSFWGameFinder';
     const GITHUB_RAW = 'https://raw.githubusercontent.com/bruhmomentobama/ItchNSFWGameFinder/main/ItchNSFWGameFinder.user.js';
-    const CURRENT_VERSION = '1.6.1';
+    const CURRENT_VERSION = '1.6.3';
     const UPDATE_CHECK_INTERVAL = 10 * 60 * 1000;
 
     // ============================================================
-    // DEVELOPMENT TOGGLE 
-    const ENABLE_CONTENT_FILTER = true; 
+    // DEVELOPMENT TOGGLE
+    const ENABLE_CONTENT_FILTER = true;
     // ============================================================
 
     // Why are you here?
@@ -503,37 +503,61 @@
         return new Promise(r => setTimeout(r, ms));
     }
 
-    // ---------- Update checker ----------
-    function checkForUpdate(manual = false) {
-        if (!manual && (isScraping || isDeepScanning || isAborted)) return;
+// ---------- Update checker ----------
+function checkForUpdate(manual = false) {
+    if (!manual && (isScraping || isDeepScanning || isAborted)) return;
 
-        GM_xmlhttpRequest({
-            method: 'GET',
-            url: GITHUB_RAW + '?t=' + Date.now(),
-            onload: res => {
-                if (res.status !== 200) {
-                    if (manual) updateStatus('Could not reach GitHub');
-                    return;
-                }
-                const match = res.responseText.match(/@version\s+(\d+\.\d+(?:\.\d+)?)/);
-                if (match) {
-                    const remote = match[1];
-                    if (remote !== CURRENT_VERSION && parseFloat(remote) > parseFloat(CURRENT_VERSION)) {
-                        showUpdateBadge();
-                        if (manual) {
-                            updateStatus(`Update available: ${CURRENT_VERSION} → ${remote}`);
-                            alert(`New version ${remote} is available!\n\nGo to the GitHub page to update.`);
-                        }
-                    } else if (manual) {
-                        updateStatus('You have the latest version.');
-                    }
-                }
-            },
-            onerror: () => {
-                if (manual) updateStatus('Update check failed');
+    GM_xmlhttpRequest({
+        method: 'GET',
+        url: GITHUB_RAW + '?t=' + Date.now(),
+        onload: res => {
+            if (res.status !== 200) {
+                if (manual) updateStatus('Could not reach GitHub');
+                return;
             }
-        });
-    }
+
+            const match = res.responseText.match(/@version\s+(\d+\.\d+(?:\.\d+)?)/);
+            if (!match) {
+                if (manual) updateStatus('Could not find version on GitHub');
+                return;
+            }
+
+            const remote = match[1];
+
+            // Proper version comparison (handles 1.6.1 vs 1.6.2 correctly)
+            function versionToNumbers(v) {
+                return v.split('.').map(n => parseInt(n, 10) || 0);
+            }
+
+            function isNewer(remoteVer, localVer) {
+                const r = versionToNumbers(remoteVer);
+                const l = versionToNumbers(localVer);
+                const len = Math.max(r.length, l.length);
+
+                for (let i = 0; i < len; i++) {
+                    const rv = r[i] || 0;
+                    const lv = l[i] || 0;
+                    if (rv > lv) return true;
+                    if (rv < lv) return false;
+                }
+                return false; // same version
+            }
+
+            if (isNewer(remote, CURRENT_VERSION)) {
+                showUpdateBadge();
+                if (manual) {
+                    updateStatus(`Update available: ${CURRENT_VERSION} → ${remote}`);
+                    alert(`New version ${remote} is available!\n\nGo to the GitHub page to update.`);
+                }
+            } else if (manual) {
+                updateStatus('You have the latest version.');
+            }
+        },
+        onerror: () => {
+            if (manual) updateStatus('Update check failed');
+        }
+    });
+}
 
     // ---------- Init ----------
     createUI();
