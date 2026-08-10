@@ -1,4 +1,3 @@
-```markdown
 # Itch.io NSFW Game Finder
 
 A Tampermonkey userscript that lets you search the entire itch.io NSFW catalog using custom keywords.
@@ -82,9 +81,7 @@ const USE_TAXONOMIC_CLOSURE = true; // Development toggle
 ## Disclaimer
 
 This tool is intended for searching legal adult content only.  
+
 The author is not responsible for how this script is used.
 
 ---
-
-If you find this useful, feel free to star the repository.
-```
