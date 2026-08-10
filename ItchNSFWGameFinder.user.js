@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         itch.io NSFW Custom Tag Searcher + Catalog Cache
 // @namespace    https://itch.io/
-// @version      1.6.3
+// @version      1.6.4
 // @description  Cache NSFW game listings + Deep Scan with proper skip of already checked pages
-// @author       you
+// @author       bruhmomentobama
 // @match        https://itch.io/games/nsfw*
 // @grant        GM_setValue
 // @grant        GM_getValue
@@ -29,7 +29,7 @@
     const CACHE_MAX_AGE_DAYS = 7;
     const GITHUB_REPO = 'https://github.com/bruhmomentobama/ItchNSFWGameFinder';
     const GITHUB_RAW = 'https://raw.githubusercontent.com/bruhmomentobama/ItchNSFWGameFinder/main/ItchNSFWGameFinder.user.js';
-    const CURRENT_VERSION = '1.6.3';
+    const CURRENT_VERSION = '1.6.4';
     const UPDATE_CHECK_INTERVAL = 10 * 60 * 1000;
 
     // ============================================================
